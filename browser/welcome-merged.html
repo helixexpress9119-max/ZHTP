@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to ZHTP - Quantum-Resistant Internet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a3a 30%, #2d1b69 60%, #4a0080 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Quantum background effects */
+        .quantum-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(255, 255, 0, 0.1) 0%, transparent 50%);
+            animation: quantumPulse 8s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes quantumPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
+        }
+
+        /* Screen containers */
+        .welcome-screen, .onboarding-screen, .signin-screen, .node-selection-screen {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 255, 255, 0.2);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Hero section styling */
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00, #00ff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 50px rgba(0, 255, 255, 0.5);
+            margin-bottom: 20px;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+
+        .title {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        /* Feature list styling */
+        .feature-list {
+            text-align: left;
+            margin: 30px 0;
+            background: rgba(0, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .feature-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            width: 30px;
+            text-align: center;
+            color: #00ffff;
+        }
+
+        /* Button styling */
+        .btn, .cta-button {
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            margin: 10px;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-primary, .cta-button {
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            color: #ffffff;
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #ff00ff, #8000ff);
+            color: #ffffff;
+            box-shadow: 0 10px 30px rgba(255, 0, 255, 0.3);
+        }
+
+        .btn:hover, .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 255, 255, 0.4);
+        }
+
+        .btn::before, .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before, .cta-button:hover::before {
+            left: 100%;
+        }
+
+        /* Onboarding steps */
+        .onboarding-step {
+            margin: 30px 0;
+            padding: 25px;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 15px;
+            border-left: 4px solid #00ffff;
+            text-align: left;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 1.2rem;
+            color: #000;
+        }
+
+        .step-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            color: #00ffff;
+        }
+
+        .step-description {
+            margin-left: 55px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        /* Wallet and info styling */
+        .wallet-info {
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .node-option {
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .node-option:hover {
+            border-color: #00ffff;
+            background: rgba(0, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .node-option.selected {
+            border-color: #00ff00;
+            background: rgba(0, 255, 0, 0.2);
+        }
+
+        /* Form inputs */
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+            accent-color: #00ffff;
+        }
+
+        /* Network status indicators */
+        .network-status {
+            background: rgba(255, 255, 0, 0.1);
+            border: 1px solid rgba(255, 255, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-online { background: #00ff00; }
+        .status-offline { background: #ff0000; }
+        .status-connecting { background: #ffff00; animation: pulse 1s infinite; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #0080ff);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .welcome-screen, .onboarding-screen, .signin-screen, .node-selection-screen {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .btn, .cta-button {
+                padding: 15px 30px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quantum-bg"></div>
+    
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div id="welcomeScreen" class="welcome-screen">
+            <h1 class="hero-title">ZHTP</h1>
+            <p class="hero-subtitle">Quantum-Resistant Internet Protocol</p>
+            <p class="hero-description">
+                Experience the future of decentralized communications with quantum-resistant cryptography,
+                zero-knowledge proofs, and peer-to-peer networking that replaces traditional internet infrastructure.
+            </p>
+            
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span class="feature-icon">🔒</span>
+                    <span>Quantum-resistant encryption using Dilithium & Kyber algorithms</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🔍</span>
+                    <span>Zero-knowledge proofs for privacy and verification</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🌐</span>
+                    <span>Decentralized DNS and content delivery</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">💰</span>
+                    <span>Built-in cryptocurrency and smart contract platform</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🚀</span>
+                    <span>DApp launcher and development platform</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🛡️</span>
+                    <span>Advanced security monitoring and threat detection</span>
+                </div>
+            </div>
+
+            <button class="cta-button" onclick="startNodeSelection()">Enter ZHTP Network</button>
+            <button class="btn btn-secondary" onclick="showSignIn()">Sign In</button>
+        </div>
+
+        <!-- Node Selection Screen -->
+        <div id="nodeSelectionScreen" class="node-selection-screen hidden">
+            <h1 class="title">🌐 Select Network Node</h1>
+            <p class="subtitle">Choose your connection point to the ZHTP network</p>
+            
+            <div id="nodeOptions">
+                <div class="node-option" onclick="selectNode('mainnet')">
+                    <h3>🚀 Mainnet Node</h3>
+                    <p>Connect to the main ZHTP production network</p>
+                    <div class="network-status">
+                        <span class="status-indicator status-online"></span>
+                        <span>Online • 1,247 peers • Low latency</span>
+                    </div>
+                </div>
+                
+                <div class="node-option" onclick="selectNode('testnet')">
+                    <h3>🧪 Testnet Node</h3>
+                    <p>Safe testing environment for development and experimentation</p>
+                    <div class="network-status">
+                        <span class="status-indicator status-online"></span>
+                        <span>Online • 156 peers • Testing environment</span>
+                    </div>
+                </div>
+                
+                <div class="node-option" onclick="selectNode('local')">
+                    <h3>💻 Local Node</h3>
+                    <p>Run your own private ZHTP node locally</p>
+                    <div class="network-status">
+                        <span class="status-indicator status-connecting"></span>
+                        <span>Initializing • Local only • Full control</span>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="goBack('welcomeScreen')">← Back</button>
+        </div>
+
+        <!-- Onboarding Screen -->
+        <div id="onboardingScreen" class="onboarding-screen hidden">
+            <h1 class="title">🛸 ZHTP Onboarding</h1>
+            <p class="subtitle">Welcome to the quantum-resistant internet revolution!</p>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="onboardingProgress" style="width: 0%;"></div>
+            </div>
+            
+            <div id="onboardingSteps">
+                <div class="onboarding-step">
+                    <div class="step-title">
+                        <span class="step-number">1</span>
+                        <span>Quantum Key Generation</span>
+                    </div>
+                    <div class="step-description">
+                        Generating your quantum-resistant cryptographic keypair using Dilithium5 and Kyber768 algorithms.
+                        This ensures your communications remain secure even against quantum computer attacks.
+                    </div>
+                </div>
+                
+                <div class="onboarding-step">
+                    <div class="step-title">
+                        <span class="step-number">2</span>
+                        <span>Zero-Knowledge Identity</span>
+                    </div>
+                    <div class="step-description">
+                        Creating your zero-knowledge digital identity that allows you to prove things about yourself
+                        without revealing personal information. Your privacy is protected by advanced cryptography.
+                    </div>
+                </div>
+                
+                <div class="onboarding-step">
+                    <div class="step-title">
+                        <span class="step-number">3</span>
+                        <span>Network Registration</span>
+                    </div>
+                    <div class="step-description">
+                        Registering your node with the ZHTP network and establishing secure peer-to-peer connections.
+                        You're now part of the decentralized internet infrastructure.
+                    </div>
+                </div>
+                
+                <div class="onboarding-step">
+                    <div class="step-title">
+                        <span class="step-number">4</span>
+                        <span>Wallet Creation</span>
+                    </div>
+                    <div class="step-description">
+                        Setting up your ZHTP cryptocurrency wallet for transactions, DApp interactions, and network fees.
+                        Your wallet is secured with quantum-resistant cryptography.
+                    </div>
+                </div>
+            </div>
+            
+            <div id="walletDisplay" class="wallet-info hidden">
+                <h3>🏦 Your ZHTP Wallet</h3>
+                <p><strong>Address:</strong> <span id="walletAddress">Generating...</span></p>
+                <p><strong>Network:</strong> <span id="selectedNetwork">testnet</span></p>
+                <p><strong>Security:</strong> Quantum-resistant (Dilithium5)</p>
+                <p><strong>Balance:</strong> 0 ZHTP</p>
+            </div>
+            
+            <button class="btn btn-primary" onclick="completeOnboarding()" id="completeBtn" style="display: none;">
+                🚀 Launch ZHTP Browser
+            </button>
+        </div>
+
+        <!-- Sign In Screen -->
+        <div id="signinScreen" class="signin-screen hidden">
+            <h1 class="title">🔐 ZHTP Sign In</h1>
+            <p class="subtitle">Access your quantum-resistant digital identity</p>
+            
+            <form id="signinForm">
+                <input type="text" id="zkIdentityInput" class="form-input" placeholder="Enter your ZK Identity to sign in..." maxlength="100">
+                <input type="text" id="walletId" class="form-input" placeholder="ZHTP Wallet Address (zhtp_...)" maxlength="50">
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="savedZKIdentity">
+                    <label for="savedZKIdentity">Remember my ZK Identity on this device</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="understoodZK">
+                    <label for="understoodZK">I understand zero-knowledge cryptography protects my privacy</label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">🚀 Sign In</button>
+                <button type="button" class="btn btn-secondary" onclick="goBack('welcomeScreen')">← Back</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let selectedNode = null;
+        let onboardingProgress = 0;
+        let onboardingComplete = false;
+
+        // Node selection
+        function startNodeSelection() {
+            hideAllScreens();
+            document.getElementById('nodeSelectionScreen').classList.remove('hidden');
+        }
+
+        function selectNode(nodeType) {
+            selectedNode = nodeType;
+            
+            // Remove selected class from all options
+            document.querySelectorAll('.node-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            event.target.closest('.node-option').classList.add('selected');
+            
+            // Auto-start onboarding after a brief delay
+            setTimeout(() => {
+                startOnboarding();
+            }, 1000);
+        }
+
+        // Show sign in screen
+        function showSignIn() {
+            hideAllScreens();
+            document.getElementById('signinScreen').classList.remove('hidden');
+        }
+
+        // Start onboarding process
+        function startOnboarding() {
+            hideAllScreens();
+            document.getElementById('onboardingScreen').classList.remove('hidden');
+            document.getElementById('selectedNetwork').textContent = selectedNode || 'testnet';
+            runOnboardingProcess();
+        }
+
+        // Run the onboarding automation
+        async function runOnboardingProcess() {
+            const steps = document.querySelectorAll('.onboarding-step');
+            const progressBar = document.getElementById('onboardingProgress');
+            
+            for (let i = 0; i < steps.length; i++) {
+                // Highlight current step
+                steps[i].style.borderColor = '#00ffff';
+                steps[i].style.background = 'rgba(0, 255, 255, 0.2)';
+                
+                // Update progress
+                onboardingProgress = ((i + 1) / steps.length) * 100;
+                progressBar.style.width = onboardingProgress + '%';
+                
+                // Simulate processing time
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Complete step
+                steps[i].style.borderColor = '#00ff00';
+                steps[i].style.background = 'rgba(0, 255, 0, 0.1)';
+                
+                // Add checkmark
+                const stepNumber = steps[i].querySelector('.step-number');
+                stepNumber.textContent = '✓';
+                stepNumber.style.background = 'linear-gradient(45deg, #00ff00, #00cc00)';
+            }
+            
+            // Generate wallet address
+            const walletAddress = generateWalletAddress();
+            document.getElementById('walletAddress').textContent = walletAddress;
+            document.getElementById('walletDisplay').classList.remove('hidden');
+            document.getElementById('completeBtn').style.display = 'inline-block';
+            
+            onboardingComplete = true;
+            
+            // Register wallet with API
+            try {
+                const response = await fetch('/api/wallet/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        node_type: selectedNode,
+                        wallet_address: walletAddress,
+                        source: 'onboarding',
+                        zk_features: ['quantum_resistant', 'zero_knowledge_proofs']
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Wallet registered successfully:', result);
+                }
+            } catch (error) {
+                console.log('Wallet registration failed:', error);
+            }
+        }
+
+        // Complete onboarding and go to main browser
+        function completeOnboarding() {
+            if (onboardingComplete) {
+                const walletAddress = document.getElementById('walletAddress').textContent;
+                
+                // Store user session data
+                const sessionData = {
+                    wallet: {
+                        address: walletAddress,
+                        network: selectedNode || 'testnet',
+                        signInMethod: 'onboarding',
+                        quantum_resistant: true,
+                        balance: 100, // Starting balance
+                        createdAt: new Date().toISOString()
+                    }
+                };
+                
+                // Store in session and local storage
+                sessionStorage.setItem('zhtp_session', JSON.stringify(sessionData));
+                localStorage.setItem('zhtpWallet', JSON.stringify(sessionData.wallet));
+                localStorage.setItem('zhtpUser', JSON.stringify({
+                    username: 'user',
+                    signInMethod: 'onboarding'
+                }));
+                
+                // Redirect to main browser interface with wallet parameter
+                window.location.href = `/?wallet=${encodeURIComponent(walletAddress)}`;
+            }
+        }
+
+        // Generate quantum-resistant wallet address
+        function generateWalletAddress() {
+            const chars = 'abcdef0123456789';
+            let address = 'zhtp_';
+            for (let i = 0; i < 40; i++) {
+                address += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return address;
+        }
+
+        // Handle sign in form
+        document.getElementById('signinForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const zkIdentity = document.getElementById('zkIdentityInput').value;
+            const walletId = document.getElementById('walletId').value;
+            
+            if (!zkIdentity || !walletId) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Store user data in local storage
+            const userData = {
+                zk_identity: zkIdentity,
+                signInMethod: 'zk_identity',
+                wallet: {
+                    address: walletId,
+                    network: 'testnet',
+                    balance: 0,
+                    quantum_resistant: true,
+                    createdAt: new Date().toISOString()
+                }
+            };
+            
+            localStorage.setItem('zhtpUser', JSON.stringify(userData));
+            localStorage.setItem('zhtpWallet', JSON.stringify(userData.wallet));
+            localStorage.setItem('zhtp_identity', zkIdentity);
+            
+            // Simulate sign in process
+            try {
+                const response = await fetch('/api/auth/signin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        zk_identity: zkIdentity,
+                        wallet_address: walletId
+                    })
+                });
+                
+                if (response.ok) {
+                    // Successful sign in - redirect with wallet parameter
+                    window.location.href = `/?wallet=${encodeURIComponent(walletId)}`;
+                } else {
+                    alert('Sign in failed. Please check your credentials.');
+                }
+            } catch (error) {
+                console.error('Sign in error:', error);
+                // Even if API fails, redirect with stored data
+                window.location.href = `/?wallet=${encodeURIComponent(walletId)}`;
+            }
+        });
+
+        // Navigation helpers
+        function hideAllScreens() {
+            document.querySelectorAll('.welcome-screen, .onboarding-screen, .signin-screen, .node-selection-screen').forEach(screen => {
+                screen.classList.add('hidden');
+            });
+        }
+
+        function goBack(screenId) {
+            hideAllScreens();
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already signed in
+            const savedIdentity = localStorage.getItem('zhtp_identity');
+            if (savedIdentity) {
+                document.getElementById('zkIdentityInput').value = savedIdentity;
+            }
+        });
+    </script>
+</body>
+</html>

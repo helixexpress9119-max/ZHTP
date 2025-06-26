@@ -1,0 +1,81 @@
+# ZHTP Live Test Configuration Template
+# Copy this file and replace the placeholder values with your actual network information
+
+# ============================================================================
+# NETWORK CONFIGURATION
+# ============================================================================
+
+# Bootstrap Node Configuration
+# Replace with the IP address of your bootstrap node
+BOOTSTRAP_NODE_IP="192.168.1.100"
+BOOTSTRAP_NODE_PORT="8000"
+
+# Your Test Node Configuration  
+# Replace with your machine's public IP address
+YOUR_PUBLIC_IP="192.168.1.101"
+YOUR_NODE_PORT="8000"
+
+# Test Network Configuration
+NETWORK_ID="zhtp-testnet"
+NETWORK_NAME="ZHTP Live Test Network"
+
+# ============================================================================
+# EXAMPLE MULTI-MACHINE SETUP
+# ============================================================================
+
+# Machine 1 (Bootstrap Node)
+# IP: 192.168.1.100
+# Role: Bootstrap + Validator
+# Ports: 7000 (HTTP), 8000 (P2P)
+
+# Machine 2 (Test Validator)
+# IP: 192.168.1.101  
+# Role: Validator
+# Ports: 7000 (HTTP), 8000 (P2P)
+# Bootstrap: 192.168.1.100:8000
+
+# Machine 3 (Test Client)
+# IP: 192.168.1.102
+# Role: Client/Light Node
+# Ports: 7000 (HTTP), 8000 (P2P)
+# Bootstrap: 192.168.1.100:8000
+
+# ============================================================================
+# FIREWALL CONFIGURATION
+# ============================================================================
+
+# Required open ports for each machine:
+# - Port 7000/tcp: ZHTP HTTP API and Web4 browser interface
+# - Port 8000/tcp: ZHTP P2P networking and consensus
+# - Port 8001-8005/tcp: Additional P2P networking (optional)
+
+# Linux firewall commands:
+# sudo ufw allow 7000/tcp
+# sudo ufw allow 8000/tcp
+
+# Windows firewall commands:
+# netsh advfirewall firewall add rule name="ZHTP HTTP" dir=in action=allow protocol=TCP localport=7000
+# netsh advfirewall firewall add rule name="ZHTP P2P" dir=in action=allow protocol=TCP localport=8000
+
+# ============================================================================
+# TESTING CHECKLIST
+# ============================================================================
+
+# Before starting live tests, ensure:
+# □ All machines have unique IP addresses
+# □ All machines can ping each other
+# □ Required ports are open on all machines
+# □ Bootstrap node is started first
+# □ Each validator has unique node names
+# □ Network has sufficient bandwidth for ZK proof sync
+
+# ============================================================================
+# SECURITY NOTES
+# ============================================================================
+
+# This is for TESTING ONLY:
+# - Use private/internal IP addresses when possible
+# - Do not expose test nodes to public internet
+# - Use VPN or secure networks for multi-location testing
+# - Change default passwords and keys for production use
+# - Monitor network traffic during testing
