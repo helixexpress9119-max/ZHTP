@@ -1,54 +1,57 @@
 @echo off
-REM ZHTP - Simple Run Script (Batch Version)
-REM Builds, runs ZHTP mainnet, and opens browser automatically!
+REM ZHTP Launch Script - Windows
+REM Builds and runs the ZHTP network service
 
-echo Building ZHTP Mainnet...
-cargo build --release
+title ZHTP Network Service
 
-if %errorlevel% == 0 (
-    echo Starting ZHTP Mainnet Core...
-    echo Browser interface will be at: http://localhost:7000
-    echo API Dashboard will be at: http://localhost:7000/api/
-    echo Start earning ZHTP tokens!
-    echo.
-      REM Start ZHTP Mainnet using the example
-    echo Starting ZHTP Mainnet Network...
-    start "ZHTP Mainnet" cmd /k "cargo run --example zhtp_mainnet_launch --release"
-    
-    REM Start ZHTP Web Service 
-    echo Starting ZHTP Web Service...
-    start "ZHTP Web Service" cmd /k "cargo run --bin network-service --release"
-    
-    REM Wait for both services to start
-    echo Waiting for all services to initialize...
-    timeout /t 15 /nobreak >nul
-    
-    REM Test if service is responding before opening browser
-    echo Testing ZHTP service connectivity...
-    curl -s http://localhost:7000/api/status || echo Service not ready yet...
-    timeout /t 5 /nobreak >nul
-    
-    REM Launch browser automatically with onboarding
-    echo Opening ZHTP Browser Interface...
-    start "" "http://localhost:7000/browser/welcome.html"
-    
-    echo.
-    echo ZHTP MAINNET IS RUNNING!
-    echo Browser opened automatically
-    echo You're now earning ZHTP tokens!
-    echo.
-    echo Available DApps:
-    echo   news.zhtp - Decentralized news
-    echo   social.zhtp - Private social network
-    echo   market.zhtp - P2P marketplace
-    echo.
-    echo Press any key to stop ZHTP mainnet...
-    pause >nul
-      REM Kill the background processes when user presses a key
-    taskkill /f /fi "WindowTitle eq ZHTP Mainnet*" >nul 2>&1
-    taskkill /f /fi "WindowTitle eq ZHTP Web Service*" >nul 2>&1
-    
-) else (
-    echo Build failed!
+echo.
+echo ███████╗██╗  ██╗████████╗██████╗ 
+echo ╚══███╔╝██║  ██║╚══██╔══╝██╔══██╗
+echo   ███╔╝ ███████║   ██║   ██████╔╝
+echo  ███╔╝  ██╔══██║   ██║   ██╔═══╝ 
+echo ███████╗██║  ██║   ██║   ██║     
+echo ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝     
+echo.
+echo Zero-Knowledge HTTP Protocol
+echo.
+
+REM Build and run the main network service
+echo 🔨 Building ZHTP...
+cargo build --release --bin zhtp
+if %errorlevel% neq 0 (
+    echo ❌ Build failed!
     pause
+    exit /b 1
 )
+
+echo ✅ Build successful!
+echo.
+echo 🚀 Starting ZHTP Network Service...
+echo.
+echo   Browser:  http://localhost:8000
+echo   API:      http://localhost:8000/api/
+echo.
+echo Press Ctrl+C to stop the service.
+
+REM Start ZHTP service in background and wait for it to start
+start /B cargo run --release --bin zhtp
+
+REM Wait a moment for service to start
+echo 🔄 Waiting for ZHTP service to initialize...
+timeout /t 5 /nobreak > nul
+
+REM Open browser automatically
+echo 🌐 Opening browser window...
+start http://localhost:8000
+
+REM Wait for the background process to continue
+echo ✅ ZHTP Network running! Browser opened automatically.
+echo 📱 Access at: http://localhost:8000
+echo 🛑 Press Ctrl+C to stop the service.
+
+REM Keep the window open and wait for the background process
+cargo run --release --bin zhtp
+
+echo.
+echo Service stopped.
+pause

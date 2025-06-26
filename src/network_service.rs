@@ -142,9 +142,9 @@ impl ProductionConfig {
                 log_level: "info".to_string(),
             },
             service_endpoints: ServiceEndpointsConfig {
-                zhtp_port: 7000,
+                zhtp_port: 7000,   // ZHTP-native protocol for P2P communication only
                 metrics_port: 9000,
-                api_port: 8000,
+                api_port: 8000,    // Main HTTP API server for browser interface
             },
             certificate_authority: CertificateAuthorityConfig {
                 enabled: true,
@@ -313,13 +313,13 @@ impl ZhtpNetworkService {
         // Deploy sample DApps
         self.deploy_sample_dapps().await?;
         
-        // Start ZHTP-native server (replaces HTTP)
-        self.start_zhtp_server().await?;
+        // ZHTP-native server disabled for browser testing - will be enabled in Tauri app
+        // self.start_zhtp_server().await?;
         
         // Start ZK proof mining and rewards
         self.start_zk_proof_mining().await?;
         
-        // Start HTTP API server for browser integration
+        // Start HTTP API server for browser integration (main entry point)
         self.start_http_api_server().await?;
         
         println!("✅ ZHTP Production Network Service started successfully");
@@ -934,7 +934,9 @@ impl ZhtpNetworkService {
                                 if has_wallet_param {
                                     // User completed onboarding, serve merged browser
                                     println!("🔍 User has wallet parameter, serving merged browser interface");
+                                    println!("📁 Current working directory: {:?}", std::env::current_dir());
                                     let file_path = "browser/index-merged.html";
+                                    println!("🔍 Attempting to read file: {}", file_path);
                                     match std::fs::read_to_string(file_path) {
                                         Ok(content) => {
                                             println!("✅ Serving merged browser from {} ({} bytes)", file_path, content.len());
@@ -964,7 +966,9 @@ impl ZhtpNetworkService {
                                 } else {
                                     // New user, serve welcome page
                                     println!("🔍 New user, serving welcome page");
+                                    println!("📁 Current working directory: {:?}", std::env::current_dir());
                                     let file_path = "browser/welcome-merged.html";
+                                    println!("🔍 Attempting to read file: {}", file_path);
                                     match std::fs::read_to_string(file_path) {
                                         Ok(content) => {
                                             println!("✅ Serving merged welcome page from {} ({} bytes)", file_path, content.len());
@@ -997,6 +1001,10 @@ impl ZhtpNetworkService {
                             
                             ("GET", "/browser") => {
                                 // Serve the merged quantum browser interface
+                                println!("🔍 Serving /browser route");
+                                println!("📁 Current working directory: {:?}", std::env::current_dir());
+                                let file_path = "browser/index-merged.html";
+                                println!("🔍 Attempting to read file: {}", file_path);
                                 match std::fs::read_to_string("browser/index-merged.html") {
                                     Ok(content) => {
                                         println!("✅ Serving merged quantum browser from browser/index-merged.html");
@@ -1346,13 +1354,20 @@ impl ZhtpNetworkService {
                                           Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n\
                                           Access-Control-Allow-Headers: Content-Type\r\n";
                         
+                        let status_text = match status {
+                            200 => "OK",
+                            404 => "Not Found",
+                            500 => "Internal Server Error",
+                            _ => "Unknown"
+                        };
+                        
                         let response = format!(
-                            "HTTP/1.1 {} OK\r\n\
+                            "HTTP/1.1 {} {}\r\n\
                             Content-Type: {}\r\n\
                             Content-Length: {}\r\n\
                             {}\r\n\
                             {}",
-                            status, content_type, body.len(), cors_headers, body
+                            status, status_text, content_type, body.len(), cors_headers, body
                         );
                         
                         if let Err(e) = stream.write_all(response.as_bytes()).await {
@@ -1380,7 +1395,8 @@ async fn main() -> Result<()> {
     
     // Create production configuration
     let mut config = ProductionConfig::default();
-    config.service_endpoints.zhtp_port = 7000;
+    config.service_endpoints.zhtp_port = 8000;  // Changed from 3000 to 8000 to avoid PostgreSQL conflict
+    config.service_endpoints.api_port = 8000;   // Use same port as ZHTP (combined server)
     config.service_endpoints.metrics_port = 9000;
     
     let service = ZhtpNetworkService::new(config).await?;
